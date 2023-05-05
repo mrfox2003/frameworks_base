@@ -18,9 +18,12 @@
 package com.android.internal.util.voltage;
 
 import android.app.Application;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.SystemProperties;
 import android.util.Log;
+
+import com.android.internal.R;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -34,7 +37,7 @@ public class PixelPropsUtils {
     private static final String TAG = PixelPropsUtils.class.getSimpleName();
     private static final String DEVICE = "ro.product.device";
     private static final boolean DEBUG = false;
-
+    private static final String PACKAGE_NETFLIX = "com.netflix.mediaclient";
     private static final Map<String, Object> propsToChangeGeneric;
     private static final Map<String, Object> propsToChangePixel5;
     private static final Map<String, Object> propsToChangePixel7Pro;
@@ -165,6 +168,9 @@ public class PixelPropsUtils {
             "flame"
     };
 
+    private static final String sNetflixModel =
+            Resources.getSystem().getString(R.string.config_netflixSpoofModel);
+
     private static volatile boolean sIsGms = false;
     private static volatile boolean sIsFinsky = false;
 
@@ -247,6 +253,9 @@ public class PixelPropsUtils {
             } else if (packageName.equals("com.android.vending")) {
                 sIsFinsky = true;
                 return;
+            } else if (!sNetflixModel.isEmpty() && packageName.equals(PACKAGE_NETFLIX)) {
+                dlog("Setting model to " + sNetflixModel + " for Netflix");
+                setPropValue("MODEL", sNetflixModel);
             } else {
                 if (Arrays.asList(packagesToChangePixel7Pro).contains(packageName)) {
                     propsToChange.putAll(propsToChangePixel7Pro);
@@ -402,5 +411,8 @@ public class PixelPropsUtils {
             Log.i(TAG, "Blocked key attestation sIsGms=" + sIsGms + " sIsFinsky=" + sIsFinsky);
             throw new UnsupportedOperationException();
         }
+    }
+    private static void dlog(String msg) {
+      if (DEBUG) Log.d(TAG, msg);
     }
 }

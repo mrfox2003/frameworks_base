@@ -74,6 +74,9 @@
     <!-- Defines custom OEM sensor for pocket detection. -->
     <string name="config_pocketJudgeVendorSensorName"></string>
 
+    <!-- Device model (Build.MODEL) to spoof for netflix, if not empty -->
+    <string name="config_netflixSpoofModel" translatable="false"></string>
+
     <!-- Does the device have a notification led -->
     <bool name="config_hasNotificationLed">true</bool>
 
